@@ -14,12 +14,27 @@ def getProductLinks(soup):
     products = soup.find_all('div', {'class': re.compile('prdct_i bx_catalog_item_container aaa typeCatalog')})
     return list(map(lambda product: c.baseURL + product.find('div', {'class': 'name-wrap'}).a.get('href'), products))
 
+# Formats characteristic
+#
+# - Discussion
+#
+# Lanmarket uses a simple HTML table to display product characteristics.
+# It has two parts: type and value.
+#
+# | type |: | value |
+#
+# The value must undergo additional processing because it may contain
+# special characters like newlines, tabs, etc. Also, we have corner cases
+# like multi-line values, which we handle with simple reg exp and split
+# it with space.
 def formatCharacteristic(characteristic):
     type = characteristic.find('td', {'class': 'product_card__product_characters_type'}).text.split(':')[0].strip()
     rawValue = characteristic.find('td', {'class': 'product_card__product_characters_val'}).text.strip()
     value = re.sub('\s+', ' ', rawValue)
     return f'{type}: {value}'
 
+# Extracts payload from product page. This includes: name, price, vendor,
+# short description, description, chars, photo links.
 def parseProductData(productURL):
     soup = h.openURL(productURL)
 
