@@ -2,12 +2,14 @@ import Constants as c
 import Helpers as h
 import re
 
+# Determines number of pages for specific category
 def getNumberOfPages(soup):
     pagination = soup.find('ul', {'class': 'c_pagination_list'})
     lists = pagination.find_all('li')
     numberOfPages = int(lists[-2].text)
     return numberOfPages
 
+# Parses product links for specific category
 def getProductLinks(soup):
     products = soup.find_all('div', {'class': re.compile('prdct_i bx_catalog_item_container aaa typeCatalog')})
     return list(map(lambda product: c.baseURL + product.find('div', {'class': 'name-wrap'}).a.get('href'), products))
