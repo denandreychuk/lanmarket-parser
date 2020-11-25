@@ -9,7 +9,7 @@ def getNumberOfPages(soup):
     return numberOfPages
 
 def getProductLinks(soup):
-    products = soup.find_all('div', {'class': 'prdct_i bx_catalog_item_container aaa typeCatalog'})
+    products = soup.find_all('div', {'class': re.compile('prdct_i bx_catalog_item_container aaa typeCatalog')})
     return list(map(lambda product: c.baseURL + product.find('div', {'class': 'name-wrap'}).a.get('href'), products))
 
 def formatCharacteristic(characteristic):
