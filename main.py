@@ -1,5 +1,6 @@
 import Constants as c
 import Helpers as h
+import csv
 import re
 
 # Determines number of pages for specific category
@@ -99,6 +100,22 @@ def parseProductData(productURL):
         'photos': photos
     }
 
+# Saves list to csv file. One item per row.
+def save(products, path):
+    with open(path, 'w') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(('Название', 'Цена', 'Артикуль', 'Краткое описание', 'Полное описание', 'Характеристики', 'Фото'))
+        for product in products:
+            writer.writerow((
+                product['name'],
+                product['price'],
+                product['vendor'],
+                product['short_description'],
+                product['description'],
+                product['characteristics'],
+                product['photos']
+            ))
+
 if __name__ == '__main__':
     categorySoup = h.openURL(c.categoryURL)
     numberOfPages = getNumberOfPages(categorySoup)
@@ -117,3 +134,5 @@ if __name__ == '__main__':
             print(f'Parsing product: {productLink}')
             product = parseProductData(productLink)
             products.append(product)
+
+    save(products, 'result.csv')
